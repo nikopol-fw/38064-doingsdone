@@ -38,6 +38,18 @@ $tasks = [
         'is_done' => false
     ]
 ];
+
+
+function get_tasks_count ($tasks, $category) {
+    $count = 0;
+    foreach ($tasks as $value) {
+        if ($value['category'] === $category) {
+            $count++;
+        }
+    }
+    return $count;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -86,7 +98,8 @@ $tasks = [
                     <?php foreach ($projects as $value): ?>
                         <li class="main-navigation__list-item">
                             <a class="main-navigation__list-item-link" href="#"><?= $value; ?></a>
-                            <span class="main-navigation__list-item-count">0</span>
+                            <span class="main-navigation__list-item-count">
+                            <?= get_tasks_count($tasks, $value); ?></span>
                         </li>
                     <?php endforeach; ?>
                     </ul>
@@ -115,7 +128,8 @@ $tasks = [
 
                     <label class="checkbox">
                         <!--добавить сюда аттрибут "checked", если переменная $show_complete_tasks равна единице-->
-                        <input class="checkbox__input visually-hidden show_completed" type="checkbox">
+                        <input class="checkbox__input visually-hidden show_completed" type="checkbox"<?php
+                            if ($show_complete_tasks === 1):?><?= ' checked'; ?><?php endif; ?>>
                         <span class="checkbox__text">Показывать выполненные</span>
                     </label>
                 </div>
