@@ -24,21 +24,21 @@
 
 <table class="tasks">
   <?php foreach ($tasks as $key => $value): ?>
-    <?php if ($show_complete_tasks === 1 || ($show_complete_tasks === 0 && $value['is_done'] === false)): ?>
+    <?php if ($show_complete_tasks === 1 || ($show_complete_tasks === 0 && (bool) $value['flag_done'] === false)): ?>
       <tr class="tasks__item task<?php
-      if ($value['is_done'] === true):
+      if ((bool) $value['flag_done'] === true):
         echo " task--completed";
       endif;
 
-      if (checkTask24h($value['done_date'])):
+      if (checkTask24h($value['date_done'])):
         echo " task--important";
       endif;
       ?>">
         <td class="task__select">
           <label class="checkbox task__checkbox">
             <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1"<?php
-            if ($value['is_done'] === true): ?><?= ' checked'; ?><?php endif; ?>>
-            <span class="checkbox__text"><?= htmlspecialchars($value['title']); ?></span>
+            if ($value['flag_done'] === true): ?><?= ' checked'; ?><?php endif; ?>>
+            <span class="checkbox__text"><?= htmlspecialchars($value['task_name']); ?></span>
           </label>
         </td>
 
@@ -46,7 +46,7 @@
           <a class="download-link" href="#">Home.psd</a>
         </td>
 
-        <td class="task__date"><?= htmlspecialchars($value['done_date']); ?></td>
+        <td class="task__date"><?= htmlspecialchars($value['date_done']); ?></td>
       </tr>
     <?php endif; ?>
   <?php endforeach; ?>
