@@ -1,4 +1,24 @@
 <?php
+function db_connect ($host, $user, $pass, $db_name) {
+  $con = mysqli_connect($host, $user, $pass, $db_name);
+  mysqli_set_charset($con, 'utf-8');
+
+  if (!$con) {
+    $error = 'Ошибка подключения к БД: ' . mysqli_connect_error();
+    $content = '<p>' . $error . '</p>';
+    $page = render_template('layout.php', [
+      'page_title' => 'Дела в порядке — ошибка подключения к БД',
+      'projects' => null,
+      'tasks' => null,
+      'content' => $content
+    ]);
+
+    echo $page;
+    exit(1);
+  }
+
+  return $con;
+}
 /**
  * Функция выводит шаблон
  *
@@ -26,14 +46,14 @@ function render_template ($name, $data = null) {
  * Получить количество категорий
  *
  * @param $tasks
- * @param $category
+ * @param $project_id
  *
  * @return int
  */
-function get_tasks_count ($tasks, $category) {
+function get_tasks_count ($tasks, $project_id) {
   $count = 0;
   foreach ($tasks as $value) {
-    if ($value['category'] === $category) {
+    if ($value['project_id'] === $project_id) {
       $count++;
     }
   }
