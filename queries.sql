@@ -56,3 +56,13 @@ UPDATE task
 UPDATE task
    SET task_name = 'Собеседование в Яндекс'
  WHERE task_id = 1;
+
+
+-- Выборка названий проектов и количества задач для каждого проекта --
+   SELECT p.project_id, project_name, COUNT(t.project_id) AS project_count
+     FROM project AS p
+LEFT JOIN task AS t
+       ON p.project_id = t.project_id
+    WHERE p.user_author = 1
+ GROUP BY project_name
+ ORDER BY p.project_id ASC;

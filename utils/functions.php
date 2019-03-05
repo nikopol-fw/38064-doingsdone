@@ -19,6 +19,7 @@ function db_connect ($host, $user, $pass, $db_name) {
 
   return $con;
 }
+
 /**
  * Функция выводит шаблон
  *
@@ -40,24 +41,6 @@ function render_template ($name, $data = null) {
   }
 
   return $result;
-}
-
-/**
- * Получить количество категорий
- *
- * @param $tasks
- * @param $project_id
- *
- * @return int
- */
-function get_tasks_count ($tasks, $project_id) {
-  $count = 0;
-  foreach ($tasks as $value) {
-    if ($value['project_id'] === $project_id) {
-      $count++;
-    }
-  }
-  return $count;
 }
 
 /**
