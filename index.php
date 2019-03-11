@@ -3,10 +3,10 @@
 require_once 'utils/functions.php';
 require_once 'utils/config.php';
 require_once 'utils/db_config.php';
-require_once 'mysql_helper.php ';
+require_once 'mysql_helper.php';
 
 
-// показывать или нет выполненные задачи
+// Показывать или нет выполненные задачи
 $show_complete_tasks = rand(0, 1);
 
 //s$projects = ['Входящие', 'Учеба', 'Работа', 'Домашние дела', 'Авто'];
@@ -47,7 +47,7 @@ $show_complete_tasks = rand(0, 1);
 
 
 if ($config['site_enable'] === false) {
-  echo "Сайт на технических работах. Зайдите позже.";
+  echo 'Сайт на технических работах. Зайдите позже.';
 
 
 } else {
@@ -57,19 +57,18 @@ if ($config['site_enable'] === false) {
   // Получаем список задач $task
   $tasks = '';
   if (isset($_GET['id'])) {
-    $sql = "SELECT task_name, date_done, project_id, flag_done"
-          ."  FROM task"
-          ." WHERE user_author = 1 AND project_id = ?;";
+    $sql = "SELECT task_name, date_done, project_id, flag_done\n"
+      . "     FROM task\n"
+      . "    WHERE user_author = 1 AND project_id = ?;";
     $stmt = db_get_prepare_stmt($db_conf, $sql, [$_GET['id']]);
 
-    // TODO возвращает true или false, нужно корректно обработать ошибку... Проверить работу при некорректном запросе
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 
   } else {
-    $sql = "SELECT task_name, date_done, project_id, flag_done"
-          ."  FROM task"
-          ." WHERE user_author = 1;";
+    $sql = "SELECT task_name, date_done, project_id, flag_done\n"
+      . "     FROM task\n"
+      . "    WHERE user_author = 1;";
     $result = mysqli_query($db_conf, $sql);
   }
 
@@ -93,13 +92,13 @@ if ($config['site_enable'] === false) {
 
   // Получаем список проектов $projects и количество задач для каждого проекта
   $projects = '';
-  $sql = "   SELECT p.project_id, project_name, COUNT(t.project_id) AS project_count\n"
-        ."     FROM project AS p\n"
-        ."LEFT JOIN task AS t\n"
-        ."       ON p.project_id = t.project_id\n"
-        ."    WHERE p.user_author = 1\n"
-        ." GROUP BY project_name\n"
-        ." ORDER BY p.project_id ASC;";
+  $sql = "SELECT p.project_id, project_name, COUNT(t.project_id) AS project_count\n"
+    . "     FROM project AS p\n"
+    . "LEFT JOIN task AS t\n"
+    . "       ON p.project_id = t.project_id\n"
+    . "    WHERE p.user_author = 1\n"
+    . " GROUP BY project_name\n"
+    . " ORDER BY p.project_id ASC;";
 
   $result = mysqli_query($db_conf, $sql);
   if (!$result) {
@@ -110,7 +109,7 @@ if ($config['site_enable'] === false) {
   // End Получаем список проектов $projects и количество задач для каждого проекта
 
 
-  $scriptname = pathinfo(__FILE__, PATHINFO_BASENAME);
+  $scriptname  = pathinfo(__FILE__, PATHINFO_BASENAME);
   $url_project = '/' . $scriptname;
 
 
