@@ -64,3 +64,24 @@ function checkTask24h ($task_date) {
 
   return $isEnding;
 }
+
+/**
+ * Проверяет, что переданная дата соответствует формату ДД.ММ.ГГГГ или формату ГГГГ-ММ-ДД
+ *
+ * @param string $date строка с датой
+ *
+ * @return bool
+ */
+function check_date_format($date) {
+  $result = false;
+  $regexp_gost2003 = '/(\d{2})\.(\d{2})\.(\d{4})/m';
+  $regexp_iso8601 = '/(\d{4})\-(\d{2})\-(\d{2})/m';
+
+  if (preg_match($regexp_gost2003, $date, $parts) && count($parts) == 4) {
+    $result = checkdate($parts[2], $parts[1], $parts[3]);
+
+  } else if (preg_match($regexp_iso8601, $date, $parts) && count($parts) == 4) {
+    $result = checkdate($parts[2], $parts[3], $parts[1]);
+  }
+  return $result;
+}
