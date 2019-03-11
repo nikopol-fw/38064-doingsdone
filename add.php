@@ -91,7 +91,12 @@ if ($config['site_enable'] === false) {
     } else {
       $sql = "INSERT INTO task (date_create, date_done, flag_done, task_name, user_author, project_id)\n"
        . "         VALUES (NOW(), ?, FALSE, ?, 1, ?);";
-      $stmt = db_get_prepare_stmt($db_conf, $sql, [$task['date'], $task['name'], $task['date']]);
+      $date_str = date('Y-m-d', strtotime($task['date']));
+      $stmt = db_get_prepare_stmt($db_conf, $sql, [
+        $date_str,
+        $task['name'],
+        $task['project']
+      ]);
       mysqli_stmt_execute($stmt);
 
       header('Location: index.php');
