@@ -28,7 +28,7 @@ function db_connect ($host, $user, $pass, $db_name) {
  *
  * @return string итоговый HTML-код с подставленными данными
  */
-function render_template ($name, $data = null) {
+function render_template ($name, $data = []) {
   $path   = __DIR__ . '/../templates/' . $name;
   $result = '';
 
