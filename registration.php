@@ -18,7 +18,6 @@ if ($config['site_enable'] === false) {
     $user       = $_POST['user'];
     $error_post = [];
 
-
     $required = ['email', 'password', 'name'];
     define('ERRORS_REG', [
       'email'          => 'Укажите E-mail для регистрации',
