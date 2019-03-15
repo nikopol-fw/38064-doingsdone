@@ -14,11 +14,11 @@
     <label class="form__label" for="name">Название <sup>*</sup></label>
 
     <?php $classname = isset($errors['name']) ? ' form__input--error' : '';
-              $value = isset($task['name']) ? htmlspecialchars($task['name']) : ''; ?>
+              $value = isset($task['name']) ? htmlspecialchars($task['name']) : '';?>
     <input class="form__input<?= $classname; ?>" type="text" name="task[name]" id="name" value="<?= $value; ?>" placeholder="Введите название">
     <?php if (isset($errors['name'])):
       echo '<p class="form__message">' . $errors['name'] . '</p>';
-    endif; ?>
+    endif;?>
   </div>
 
 
@@ -26,7 +26,7 @@
     <label class="form__label" for="project">Проект</label>
 
     <?php $classname = isset($errors['project']) ? ' form__input--error' : '';
-              $value = isset($task['project']) ? htmlspecialchars($task['project']) : ''; ?>
+              $value = isset($task['project']) ? htmlspecialchars($task['project']) : '';?>
     <select class="form__input form__input--select<?= $classname; ?>" name="task[project]" id="project">
       <?php foreach ($projects as $index => $project): ?>
         <option value="<?= $project['project_id']; ?>" <?php
@@ -38,7 +38,7 @@
     </select>
     <?php if (isset($errors['project'])):
       echo '<p class="form__message">' . $errors['project'] . '</p>';
-    endif; ?>
+    endif;?>
   </div>
 
 
@@ -46,11 +46,11 @@
     <label class="form__label" for="date">Дата выполнения</label>
 
     <?php $classname = isset($errors['date']) ? ' form__input--error' : '';
-              $value = isset($task['date']) ? htmlspecialchars($task['date']) : ''; ?>
+              $value = isset($task['date']) ? htmlspecialchars($task['date']) : '';?>
     <input class="form__input form__input--date<?= $classname; ?>" type="date" name="task[date]" id="date" value="<?= $value; ?>" placeholder="Введите дату в формате ДД.ММ.ГГГГ">
     <?php if (isset($errors['date'])):
       echo '<p class="form__message">' . $errors['date'] . '</p>';
-    endif; ?>
+    endif;?>
   </div>
 
 
