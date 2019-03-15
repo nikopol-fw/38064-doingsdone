@@ -31,6 +31,7 @@ $db_conf = db_connect($db_host, $db_user, $db_pass, $db_name);
 
 // Получаем список проектов $projects и количество задач для каждого проекта
 $projects = '';
+$user_id = $_SESSION['user']['user_id'];
 $sql = "SELECT p.project_id, project_name, COUNT(t.project_id) AS project_count\n"
   . "     FROM project AS p\n"
   . "LEFT JOIN task AS t\n"
@@ -50,40 +51,39 @@ if (!$result) {
 
 // Сценарий вызван с методом POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $task = $_POST['task'];
+  $project = $_POST['project'];
   $errors_post = [];
 
-  $required = ['name', 'project', 'date'];
-  define('ERRORS_TASK', [
-    'name'         => 'Укажите название для задачи',
-    'project'      => 'Выберите проект из списка существующих проектов',
-    'date'         => 'Выберите дату',
-    'date_format'  => 'Дата должна быть указана в формате "ДД.ММ.ГГГГ" либо "ГГГГ-ММ-ДД"',
-    'date_expired' => 'Дата должна быть больше или равна текущей',
+  $required = ['name'];
+  define('ERRORS_PROJECT', [
+    'name'          => 'Укажите название проекта',
+    'name_occupied' => 'Проект с таким название уже существует'
   ]);
 
   foreach ($required as $field) {
     // Проверка обязательных полей
-    if (empty($task[$field])) {
-      $errors_post[$field] = ERRORS_TASK[$field];
+    if (empty($project[$field])) {
+      $errors_post[$field] = ERRORS_PROJECT[$field];
 
       // Проверка полей на кастомные условия
     } else {
       switch ($field) {
-        case 'project':
-          if (!in_array($task[$field], array_column($projects, 'project_id'), true)) {
-            $errors_post[$field] = ERRORS_TASK[$field];
-          }
-          break;
+        case 'name':
+          $safe_name = mysqli_real_escape_string($db_conf, $project[$field]);
+          $user_id = $_SESSION['user']['user_id'];
+          $sql = "SELECT COUNT(project_name) AS count\n"
+               . "  FROM project\n"
+               . " WHERE user_author = '$user_id'\n"
+               . "   AND project_name = '$safe_name';";
+          $result = mysqli_query($db_conf, $sql);
 
-        case 'date':
-          if (!check_date_format($task[$field])) {
-            $errors_post[$field] = ERRORS_TASK['date_format'];
-            break;
+          if (!$result) {
+            exit(1);
           }
-          if (strtotime($task[$field]) < time()) {
-            $errors_post[$field] = ERRORS_TASK['date_expired'];
-            break;
+
+          $count = mysqli_fetch_assoc($result);
+          if ($count['count'] !== '0') {
+            $errors_post[$field] = ERRORS_PROJECT['name_occupied'];
           }
           break;
 
@@ -93,33 +93,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   }
 
-
   if (count($errors_post)) {
-    $content = render_template('form_task.php', [
-      'projects' => $projects,
+    $content = render_template('form_project.php', [
       'errors' => $errors_post,
-      'task' => $task
+      'project'   => $project
     ]);
 
-    // Нет ошибок при отправке формы
+  // Нет ошибок при отправке формы
   } else {
-    $sql = "INSERT INTO task (date_create, date_done, flag_done, task_name, user_author, project_id)\n"
-     . "         VALUES (NOW(), ?, FALSE, ?, 1, ?);";
-    $date_str = date('Y-m-d', strtotime($task['date']));
+    $user_id = $_SESSION['user']['user_id'];
+    $sql = "INSERT INTO project (project_name, user_author) "
+         . "     VALUES ('?', '$user_id');";
     $stmt = db_get_prepare_stmt($db_conf, $sql, [
-      $date_str,
-      $task['name'],
-      $task['project']
+      $project['name']
     ]);
     mysqli_stmt_execute($stmt);
 
     header('Location: ./');
     exit(0);
   }
-
-  // Сценарий вызван без метода POST
 } else {
-  $content = render_template('form_task.php', [
+  $content = render_template('form_project.php', [
     'projects' => $projects,
   ]);
 }
@@ -138,4 +132,3 @@ $template = render_template('layout.php', [
 
 
 echo $template;
-

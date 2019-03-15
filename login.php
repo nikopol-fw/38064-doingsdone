@@ -17,7 +17,7 @@ session_start();
 
 // Если пользователь уже авторизован
 if (isset($_SESSION['user'])) {
-  header('Location: index.php');
+  header('Location: ./');
   exit(0);
 }
 // End
